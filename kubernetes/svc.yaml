@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mypythonapp
+  name: pythonapp
   labels:
-    app: mypythonapp
+    app: pythonapp
 spec:
   selector:
-    app: mypythonapp
+    app: pythonapp
   ports:
   - protocol: TCP
     port: 5000
