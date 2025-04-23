@@ -1,32 +1,32 @@
 # Stage 1: build dependencies
 FROM python:3.13-alpine AS builder
 
-# install build tools (if you have any C extensions)
-RUN apt-get update \
-    && apt-get install -y --no-install-recommends gcc \
-    && rm -rf /var/lib/apt/lists/*
+# Install Alpine build tools for C extensions
+RUN apk add --no-cache \
+      build-base    \
+      libffi-dev    \
+      openssl-dev   \
+      musl-dev      \
+      python3-dev
 
 WORKDIR /build
 
-# only copy requirements (so this layer is cached until requirements.txt changes)
+# Copy requirements and install into /install (so this layer caches well)
 COPY requirements.txt .
-
-# install into an isolated prefix
 RUN pip install --upgrade pip \
-    && pip install --no-cache-dir --prefix=/install -r requirements.txt
+ && pip install --no-cache-dir --prefix=/install -r requirements.txt
 
-# Stage 2: assemble final image
+# Stage 2: runtime image
 FROM python:3.13-alpine
 
 WORKDIR /app
 
-# Copy installed libs from builder
+# Bring in the pre-installed packages
 COPY --from=builder /install /usr/local
 
-# Copy your application code
+# Copy application code
 COPY app.py .
 
 EXPOSE 5000
 
-# Default command
 CMD ["python", "app.py"]

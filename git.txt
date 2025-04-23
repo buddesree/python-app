@@ -1,3 +1,4 @@
+git
 echo "# python-app" >> README.md
 git init
 git add README.md
@@ -5,3 +6,7 @@ git commit -m "first commit"
 git branch -M main
 git remote add origin https://github.com/buddesree/python-app.git
 git push -u origin main
+
+docker
+docker build -t flask-hello:1.0 .
+docker run -d --name flask-hello  -p 5000:5000 flask-hello:1.0
